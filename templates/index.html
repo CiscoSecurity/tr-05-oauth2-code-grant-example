@@ -1,0 +1,105 @@
+{% include "header.html" %}
+
+<div class="container" id="main">
+    <div class="d-flex bd-highlight">
+        <div class="p-2 flex-grow-1 bd-highlight"><h1 class="bd-title">Example app</h1></div>
+        <div class="p-2 bd-highlight"><a class="btn btn-outline-primary" href="{{ url_for('oauth.login') }}"
+                                         title="Login via OAuth2" rel="noopener">Login
+            via OAuth2</a></div>
+        <div class="p-2 bd-highlight"><a class="btn btn-outline-danger" href="{{ url_for('oauth.logout') }}"
+                                         title="Login via OAuth2"
+                                         rel="noopener">Logout</a></div>
+    </div>
+    {% if info %}
+        <div class="alert alert-warning" role="alert">
+            {{ info }}
+        </div>
+    {% endif %}
+    {% if session.get('oauth_token') %}
+        <p>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#accessToken"
+                    aria-expanded="false" aria-controls="accessToken">
+                Your access token
+            </button>
+        </p>
+        <div class="collapse" id="accessToken" style="padding-bottom: 5px;">
+            <div class="card card-body">
+                {{ session["oauth_token"]["access_token"] }}
+            </div>
+        </div>
+    {% endif %}
+    <p>
+    <div class="card card-body">
+
+        <form action="{{ url_for('modules.modules') }}">
+            <button class="btn btn-outline-info btn-block" type="submit">Get modules</button>
+        </form>
+
+
+        {% if modules %}
+            <div style="padding-top: 5px;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Module ID</th>
+                        <th scope="col">Module name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for module in modules %}
+                        <tr>
+                            <th scope="row">{{ module["id"] }}</th>
+                            <td>{{ module["name"] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+    </div>
+    </p>
+    <p>
+        <div class="card card-body">
+
+            <form action="{{ url_for('modules.modules') }}" method="post">
+                <div class="form-group row">
+                    <label for="name" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                </div>
+                <button class="btn btn-outline-success btn-block" type="submit">
+                    Create module
+                </button>
+            </form>
+            {% if created_module %}
+                <div style="padding-top: 5px;">
+                <p><b>Module ID</b></p>
+                <p> {{ created_module["id"] }}</p>
+                <p><b>Module name</b></p>
+                <p> {{ created_module["name"] }}</p>
+                </div>
+            {% endif %}
+</div>
+</p>
+<p>
+<div class="card card-body">
+
+    <form action={{ url_for("modules.delete_module") }}>
+        <div class="form-group row">
+            <label for="module_id" class="col-sm-2 col-form-label">Module ID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="module_id" name="module_id">
+            </div>
+        </div>
+        <button class="btn btn-outline-danger btn-block" type="submit" id="deleteModule">
+            Delete module
+        </button>
+    </form>
+
+</div>
+</p>
+</div>
+
+{% include "footer.html" %}
