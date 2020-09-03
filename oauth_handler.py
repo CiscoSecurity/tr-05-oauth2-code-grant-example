@@ -25,7 +25,7 @@ class OAuth2CTR:
             "response_type": "code",
             "client_id": self.client_id,
             "redirect_uri": url_for("oauth.auth", _external=True),
-            "scope": "admin integration",
+            "scope": "admin integration inspect",
             "state": state,
         }
         session["state"] = state
@@ -108,6 +108,13 @@ class OAuth2CTR:
             existing_token.update(token)
         else:
             session["oauth_token"] = token
+
+    @staticmethod
+    def validate_state():
+        state = request.args.get("state")
+        session_state = session.get("state")
+        if state != session_state:
+            abort(400, "State has been corrupted")
 
     @staticmethod
     def _get_tokens_expiration_time(expires_in):

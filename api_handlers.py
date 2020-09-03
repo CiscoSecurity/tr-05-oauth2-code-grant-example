@@ -4,14 +4,19 @@ from flask import session, request, abort
 from constants import BASE_URL
 
 
-class ModulesAPI:
+class BaseAPIHandler:
     def __init__(self):
-        self.url = f"{BASE_URL}/iroh/iroh-int/module-instance"
         self.headers = {
             "Accept": "application/json",
             "Authorization": f'Bearer {session["oauth_token"]["access_token"]}',
             "Content-Type": "application/json",
         }
+
+
+class ModulesAPIHandler(BaseAPIHandler):
+    def __init__(self):
+        super().__init__()
+        self.url = f"{BASE_URL}/iroh/iroh-int/module-instance"
 
     def get_modules(self):
         response = requests.request("GET", self.url, headers=self.headers)
@@ -44,3 +49,22 @@ class ModulesAPI:
         if response.status_code != 204:
             abort(response.status_code, "Can't delete modules")
         return response.status_code
+
+
+class InspectAPIHandler(BaseAPIHandler):
+    def __init__(self):
+        super().__init__()
+        self.url = f"{BASE_URL}/iroh/iroh-inspect/inspect"
+
+    def inspect_observable(self):
+        payload = {
+            "content": request.form.get("content")
+        }
+
+        response = requests.request(
+            "POST", self.url, headers=self.headers, json=payload
+        )
+        if response.status_code != 200:
+            abort(response.status_code, "Can't inspect observable")
+
+        return response.json()

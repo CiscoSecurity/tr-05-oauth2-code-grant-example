@@ -100,6 +100,30 @@
 
 </div>
 </p>
+
+<p>
+<div class="card card-body">
+
+    <form action={{ url_for("inspect.inspect") }} method="post">
+        <div class="form-group row">
+            <label for="content" class="col-sm-2 col-form-label">Observable</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="content" name="content">
+            </div>
+        </div>
+        <button class="btn btn-outline-dark btn-block" type="submit" id="inspect">
+            Inspect observable
+        </button>
+    </form>
+    {% if observable != None %}
+    <p>{{  observable }}</p>
+    {% endif %}
+</div>
+</p>
+
+
+
+
 </div>
 
 {% include "footer.html" %}

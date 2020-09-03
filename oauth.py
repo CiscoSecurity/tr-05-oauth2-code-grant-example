@@ -20,11 +20,9 @@ def login():
 
 @oauth_blueprint.route("/auth")
 def auth():
-    state = request.args.get("state")
-    session_state = session.get("state")
-    if state != session_state:
-        abort(400, "State has been corrupted")
-    OAuth2CTR().get_tokens()
+    auth_handler = OAuth2CTR()
+    auth_handler.validate_state()
+    auth_handler.get_tokens()
     return redirect("/")
 
 
