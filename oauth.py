@@ -15,14 +15,14 @@ def homepage():
 @oauth_blueprint.route("/login")
 def login():
     auth = OAuth2CTR()
-    return redirect(auth.authorization_url())
+    return redirect(auth.get_authorization_url())
 
 
 @oauth_blueprint.route("/auth")
 def auth():
     auth_handler = OAuth2CTR()
-    auth_handler.validate_state()
-    auth_handler.get_tokens()
+    auth_handler.validate_state(request.args.get("state"))
+    auth_handler.get_tokens(request.args.get("code"))
     return redirect("/")
 
 

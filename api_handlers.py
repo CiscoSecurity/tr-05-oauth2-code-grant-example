@@ -1,32 +1,51 @@
 import requests
-from flask import session, request, abort
+from flask import session, abort
 
 from constants import BASE_URL
 
 
-class BaseAPIHandler:
-    def __init__(self):
-        self.headers = {
+class BaseAPI:
+    url: str
+
+    def _get(self, *args, **kwargs):
+        return self.__request("GET", *args, **kwargs)
+
+    def _post(self, *args, **kwargs):
+        return self.__request("POST", *args, **kwargs)
+
+    def _put(self, *args, **kwargs):
+        return self.__request("PUT", *args, **kwargs)
+
+    def _delete(self, *args, **kwargs):
+        return self.__request("DELETE", *args, **kwargs)
+
+    def __request(self, method, *args, **kwargs):
+        response = requests.request(method, *args, **kwargs)
+        if not response.ok:
+            abort(response.status_code, f"Failed to {method} data ({self.url})")
+        try:
+            return response.json()
+        except ValueError:
+            return {}
+
+
+class ModuleInstanceAPI(BaseAPI):
+    url = f"{BASE_URL}/iroh/iroh-int/module-instance"
+
+    @property
+    def headers(self):
+        return {
             "Accept": "application/json",
             "Authorization": f'Bearer {session["oauth_token"]["access_token"]}',
             "Content-Type": "application/json",
         }
 
-
-class ModulesAPIHandler(BaseAPIHandler):
-    def __init__(self):
-        super().__init__()
-        self.url = f"{BASE_URL}/iroh/iroh-int/module-instance"
-
     def get_modules(self):
-        response = requests.request("GET", self.url, headers=self.headers)
-        if response.status_code != 200:
-            abort(response.status_code, "Can't get modules")
-        return response.json()
+        return self._get(self.url, headers=self.headers)
 
-    def create_module(self):
+    def create_module(self, name):
         payload = {
-            "name": request.form.get("name"),
+            "name": name,
             "module_type_id": "a89161ba-8d70-4ea9-a190-1453a763d84f",
             "settings": {
                 "url": "https://kt093m2r7d.execute-api.us-east-1.amazonaws.com/dev"
@@ -35,36 +54,27 @@ class ModulesAPIHandler(BaseAPIHandler):
             "visibility": "org",
         }
 
-        response = requests.request(
-            "POST", self.url, headers=self.headers, json=payload
-        )
-        if response.status_code != 201:
-            abort(response.status_code, "Can't create modules")
+        return self._post(self.url, headers=self.headers, json=payload)
 
-        return response.json()
-
-    def delete_module(self):
-        delete_url = f"{self.url}/{request.args.get('module_id')}"
-        response = requests.request("DELETE", delete_url, headers=self.headers)
-        if response.status_code != 204:
-            abort(response.status_code, "Can't delete modules")
-        return response.status_code
+    def delete_module(self, module_id):
+        delete_url = f"{self.url}/{module_id}"
+        return self._delete(delete_url, headers=self.headers)
 
 
-class InspectAPIHandler(BaseAPIHandler):
-    def __init__(self):
-        super().__init__()
-        self.url = f"{BASE_URL}/iroh/iroh-inspect/inspect"
+class InspectAPI(BaseAPI):
+    url = f"{BASE_URL}/iroh/iroh-inspect/inspect"
 
-    def inspect_observable(self):
-        payload = {
-            "content": request.form.get("content")
+    @property
+    def headers(self):
+        return {
+            "Accept": "application/json",
+            "Authorization": f'Bearer {session["oauth_token"]["access_token"]}',
+            "Content-Type": "application/json",
         }
 
-        response = requests.request(
-            "POST", self.url, headers=self.headers, json=payload
-        )
-        if response.status_code != 200:
-            abort(response.status_code, "Can't inspect observable")
+    def inspect_observable(self, content):
+        payload = {
+            "content": content
+        }
 
-        return response.json()
+        return self._post(self.url, headers=self.headers, json=payload)

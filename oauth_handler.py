@@ -1,20 +1,26 @@
 import time
 import uuid
-import requests
+from http import HTTPStatus
 
 from urllib.parse import urlencode
-from flask import url_for, session, request, abort
+from flask import url_for, session, abort
 
+from api_handlers import BaseAPI
 from constants import CLIENT_ID, CLIENT_SECRET, BASE_URL
 
 
-class OAuth2CTR:
-    def __init__(self):
-        self.client_id = CLIENT_ID
-        self.client_secret = CLIENT_SECRET
-        self.url = f"{BASE_URL}/iroh/oauth2"
+class OAuth2CTR(BaseAPI):
+    url = f"{BASE_URL}/iroh/oauth2"
 
-    def authorization_url(self):
+    @property
+    def headers(self):
+        return {"Content-Type": "application/x-www-form-urlencoded"}
+
+    @property
+    def auth(self):
+        return CLIENT_ID, CLIENT_SECRET
+
+    def get_authorization_url(self):
         """Generates authorization URL to external
         OAuth2 authorization page
         Returns:
@@ -23,7 +29,7 @@ class OAuth2CTR:
         state = self._generate_state()
         params = {
             "response_type": "code",
-            "client_id": self.client_id,
+            "client_id": CLIENT_ID,
             "redirect_uri": url_for("oauth.auth", _external=True),
             "scope": "admin integration inspect",
             "state": state,
@@ -33,18 +39,20 @@ class OAuth2CTR:
 
         return auth_url
 
-    def get_tokens(self):
+    def get_tokens(self, code):
         """Gets access_token, refresh_token etc. by code that OAuth2 external
         service has sent. Saves it in user's session
 
+        Args:
+            code: Authorization code
+
         Returns:
-            dict: token
+            dict: Tokens
         """
         url = f"{self.url}/token"
 
-        code = request.args.get("code")
         if not code:
-            abort(500, "Authorization code was not provided")
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, "Authorization code was not provided")
 
         payload = {
             "grant_type": "authorization_code",
@@ -52,18 +60,13 @@ class OAuth2CTR:
             "code": code,
         }
 
-        response = requests.request(
-            "POST",
+        tokens = self._post(
             url,
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            headers=self.headers,
             data=urlencode(payload),
-            auth=self.auth(),
+            auth=self.auth,
         )
-        if response.status_code != 200:
-            abort(response.status_code, "Can't get tokens")
-
-        tokens = response.json()
-        self._save_token(tokens)
+        self._save_tokens(tokens)
 
         return tokens
 
@@ -76,32 +79,25 @@ class OAuth2CTR:
         """
         refresh_token = session.get("oauth_token", {}).get("refresh_token")
         if not refresh_token:
-            abort(500, "Refresh token was not provided")
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, "Refresh token was not provided")
 
         payload = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
         }
 
-        response = requests.request(
-            "POST",
+        tokens = self._post(
             f"{self.url}/token",
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            headers=self.headers,
             data=urlencode(payload),
-            auth=self.auth(),
+            auth=self.auth,
         )
-        if response.status_code != 200:
-            abort(response.status_code, "Can't get tokens")
 
-        tokens = response.json()
-        self._save_token(tokens)
+        self._save_tokens(tokens)
 
         return tokens
 
-    def auth(self):
-        return self.client_id, self.client_secret
-
-    def _save_token(self, token):
+    def _save_tokens(self, token):
         token["expires_at"] = self._get_tokens_expiration_time(token["expires_in"])
         existing_token = session.get("oauth_token")
         if existing_token:
@@ -110,11 +106,10 @@ class OAuth2CTR:
             session["oauth_token"] = token
 
     @staticmethod
-    def validate_state():
-        state = request.args.get("state")
+    def validate_state(request_state):
         session_state = session.get("state")
-        if state != session_state:
-            abort(400, "State has been corrupted")
+        if request_state != session_state:
+            abort(HTTPStatus.BAD_REQUEST, "State has been corrupted")
 
     @staticmethod
     def _get_tokens_expiration_time(expires_in):
