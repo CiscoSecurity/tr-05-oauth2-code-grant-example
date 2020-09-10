@@ -34,7 +34,8 @@ pip install -r requirements.txt
 ```
 
 Create client to get `CTR_CLIENT_ID` and `CTR_CLIENT_SECRET` via [Swagger UI](https://visibility.amp.cisco.com/iroh/oauth2-clients/index.html#/OAuth2Client/post_iroh_oauth2_clients_clients)
-Sent next payload by `/iroh/oauth2-clients/clients` (POST):
+
+Send next payload by `/iroh/oauth2-clients/clients` (POST):
 ```javascript
 {
   "scopes": [
