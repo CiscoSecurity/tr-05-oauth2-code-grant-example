@@ -12,13 +12,53 @@ Clone the repository
 
 Install [Python 3.8.5](https://www.python.org/downloads/) 
 
+Create virtualenv
+```bash
+python3 -m venv <your_venv_name>
+```
+Activate virtualenv:
+
+Mac OS/Linux
+```bash
+source <your_venv_name>/bin/activate
+``` 
+Windows
+```cmd
+<your_venv_name>\Scripts\activate.bat
+```
+
 From current directory install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Set up environment variables
+Create client to get `CTR_CLIENT_ID` and `CTR_CLIENT_SECRET` via [Swagger UI](https://visibility.amp.cisco.com/iroh/oauth2-clients/index.html#/OAuth2Client/post_iroh_oauth2_clients_clients)
+
+Send next payload by `/iroh/oauth2-clients/clients` (POST):
+```javascript
+{
+  "scopes": [
+    "integration",
+    "admin",
+    "inspect"
+  ],
+  "description": "Your description",
+  "redirects": [
+    "http://localhost:5000/auth",
+    "http://127.0.0.1:5000/auth"
+  ],
+  "availability": "org",
+  "name": "Your name",
+  "grants": [
+    "auth-code"
+  ]
+}
+```
+Then you will receive response body, where `id` is `CTR_CLIENT_ID` and `password` is `CTR_CLIENT_SECRET`
+
+
+Set up environment variables:
 
 For Mac OS / Linux:
 ```bash
