@@ -90,7 +90,12 @@
         <div class="form-group row">
             <label for="module_id" class="col-sm-2 col-form-label">Module ID</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="module_id" name="module_id">
+                {% if created_module %}
+                    <input type="text" class="form-control" id="module_id" name="module_id"
+                           value="{{ created_module['id'] }}">
+                {% else %}
+                    <input type="text" class="form-control" id="module_id" name="module_id">
+                {% endif %}
             </div>
         </div>
         <button class="btn btn-outline-danger btn-block" type="submit" id="deleteModule">
@@ -120,8 +125,6 @@
     {% endif %}
 </div>
 </p>
-
-
 
 
 </div>
