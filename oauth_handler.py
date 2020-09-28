@@ -1,16 +1,21 @@
 import time
 import uuid
-from http import HTTPStatus
 
+from http import HTTPStatus
 from urllib.parse import urlencode
 from flask import url_for, session, abort
 
 from api_handlers import BaseAPI
-from constants import CLIENT_ID, CLIENT_SECRET, BASE_URL
+from constants import CLIENT_ID, CLIENT_SECRET, REGION_API_URLS
 
 
 class OAuth2CTR(BaseAPI):
-    url = f"{BASE_URL}/iroh/oauth2"
+    def __init__(self, region=None):
+        self.region = region or session.get("region")
+        if not self.region or self.region not in REGION_API_URLS:
+            abort(400, "The region is set incorrectly")
+
+        self.url = f"{REGION_API_URLS[self.region]['iroh-services']}oauth2"
 
     @property
     def headers(self):

@@ -18,14 +18,9 @@ python3 -m venv <your_venv_name>
 ```
 Activate virtualenv:
 
-Mac OS/Linux
-```bash
-source <your_venv_name>/bin/activate
-``` 
-Windows
-```cmd
-<your_venv_name>\Scripts\activate.bat
-```
+- Mac OS/Linux: ```source <your_venv_name>/bin/activate``` 
+
+- Windows  ```<your_venv_name>\Scripts\activate.bat```
 
 From current directory install dependencies
 
@@ -76,3 +71,5 @@ Run the next command:
 ```bash
 flask run
 ```
+
+To login via account from different region choose preferable region from drop-down

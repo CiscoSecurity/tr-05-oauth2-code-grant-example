@@ -1,14 +1,32 @@
 {% include "header.html" %}
 
 <div class="container" id="main">
-    <div class="d-flex bd-highlight">
-        <div class="p-2 flex-grow-1 bd-highlight"><h1 class="bd-title">Example app</h1></div>
-        <div class="p-2 bd-highlight"><a class="btn btn-outline-primary" href="{{ url_for('oauth.login') }}"
-                                         title="Login via OAuth2" rel="noopener">Login
-            via OAuth2</a></div>
+    <div class="d-flex bd-highlight mb-3">
+        <div class="mr-auto p-2 bd-highlight"><h1 class="bd-title">Example app</h1></div>
+        {% if not session.get('oauth_token') %}
+            <form class="form-group row" action="{{ url_for('oauth.login') }}">
+                <div class="p-2 bd-highlight">
+                    <select class="form-control" id="region" name="region">
+                        {% for region in regions %}
+                            <option value="{{ region }}"
+                                    {% if region == "North America" %}
+                                    selected
+                                    {% endif %}
+                            >{{ region }}</option>
+
+                        {% endfor %}
+                    </select></div>
+                <div class="p-2 bd-highlight"><input
+                        class="btn btn-outline-primary" type="submit"
+                        value="Login via OAuth2">
+                </div>
+            </form>
+        {% endif %}
+        {% if  session.get('oauth_token') %}
         <div class="p-2 bd-highlight"><a class="btn btn-outline-danger" href="{{ url_for('oauth.logout') }}"
                                          title="Login via OAuth2"
                                          rel="noopener">Logout</a></div>
+        {% endif %}
     </div>
     {% if info %}
         <div class="alert alert-warning" role="alert">
