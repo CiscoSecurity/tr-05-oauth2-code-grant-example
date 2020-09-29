@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import abort
 
@@ -11,3 +12,10 @@ if not CLIENT_ID:
 CLIENT_SECRET = os.getenv("CTR_CLIENT_SECRET")
 if not CLIENT_SECRET:
     abort(500, "Env variable CTR_CLIENT_SECRET was not specified")
+
+try:
+    REGION_API_URLS = requests.get(
+        "https://visibility.amp.cisco.com/clouds.json"
+    ).json()
+except ValueError:
+    abort(500, "Cisco server cannot get available regions")
