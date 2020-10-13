@@ -48,7 +48,7 @@ class ModuleInstanceAPI(BaseAPI):
             "name": name,
             "module_type_id": "a89161ba-8d70-4ea9-a190-1453a763d84f",
             "settings": {
-                "url": "https://kt093m2r7d.execute-api.us-east-1.amazonaws.com/dev"
+                "url": "https://example.com/relay"
             },
             "enabled": True,
             "visibility": "org",
