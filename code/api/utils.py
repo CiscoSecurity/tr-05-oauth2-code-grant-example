@@ -4,7 +4,7 @@ from functools import wraps
 from flask import session, render_template, abort
 
 from constants import REGION_API_URLS
-from oauth_handler import OAuth2CTR
+from api.oauth_handler import OAuth2CTR
 
 
 def required_authorization(func):
