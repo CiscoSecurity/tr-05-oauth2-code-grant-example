@@ -4,15 +4,19 @@ import pytest
 from flask import session
 
 from api.oauth_handler import OAuth2CTR
+from constants import CLIENT_ID
 
 TEST_TOKENS = {'access_token': 'test_access_token',
                'refresh_token': 'test_refresh_token',
-               'token_type': 'bearer', 'expires_in': 600, 'scope': 'integration admin inspect'}
+               'token_type': 'bearer', 'expires_in': 600,
+               'scope': 'integration admin inspect'}
 
 
 @pytest.fixture
 def mock_state(monkeypatch):
-    monkeypatch.setattr(OAuth2CTR, "_generate_state", lambda *args, **kwargs: "mocked_state")
+    monkeypatch.setattr(
+        OAuth2CTR, "_generate_state", lambda *args, **kwargs: "mocked_state"
+    )
 
 
 @pytest.fixture
@@ -26,7 +30,7 @@ def test_oauth_authorization_url(test_app, mock_state):
         url = auth.get_authorization_url()
 
         assert url == "https://visibility.amp.cisco.com/iroh/oauth2/" \
-                      "authorize?response_type=code&client_id=test_id&" \
+                      f"authorize?response_type=code&client_id={CLIENT_ID}&" \
                       "redirect_uri=http%3A%2F%2Flocalhost%2Fauth&" \
                       "scope=admin+integration+inspect&" \
                       "state=mocked_state"
@@ -45,8 +49,11 @@ def test_oauth_save_token(test_app, mock_time):
         auth = OAuth2CTR("North America")
         auth._save_tokens(dict(TEST_TOKENS))
 
-        assert session["oauth_token"] == {'access_token': 'test_access_token',
-                                          'refresh_token': 'test_refresh_token',
-                                          'token_type': 'bearer', 'expires_in': 600,
-                                          'expires_at': 1500000600,
-                                          'scope': 'integration admin inspect'}
+        assert session["oauth_token"] == {
+            'access_token': 'test_access_token',
+            'refresh_token': 'test_refresh_token',
+            'token_type': 'bearer',
+            'expires_in': 600,
+            'expires_at': 1500000600,
+            'scope': 'integration admin inspect'
+        }

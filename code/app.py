@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-from api.inspect_ import inspect_blueprint
+from api.inspect import inspect_blueprint
 from api.modules import modules_blueprint
 from api.oauth import oauth_blueprint
 
