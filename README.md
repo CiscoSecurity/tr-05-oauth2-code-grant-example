@@ -53,19 +53,8 @@ Send next payload by `/iroh/oauth2-clients/clients` (POST):
 Then you will receive response body, where `id` is `CTR_CLIENT_ID` and `password` is `CTR_CLIENT_SECRET`
 
 
-Set up environment variables:
+Set up received variables inside the .env file. 
 
-For Mac OS / Linux:
-```bash
-export CTR_CLIENT_ID=<you generated cliend id>
-export CTR_CLIENT_SECRET=<you generated secret password>
-```
-
-For Windows:
-```cmd
-set CTR_CLIENT_ID=<you generated cliend id>
-set CTR_CLIENT_SECRET=<you generated secret password>
-```
 
 Run the next command:
 ```bash
