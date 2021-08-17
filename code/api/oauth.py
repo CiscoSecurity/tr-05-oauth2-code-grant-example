@@ -29,7 +29,7 @@ def auth():
 
     auth_handler = OAuth2CTR()
     auth_handler.validate_state(request.args.get("state"))
-    auth_handler.get_tokens(request.args.get(".."))
+    auth_handler.get_tokens(request.args.get("code"))
     return redirect("/")
 
 
