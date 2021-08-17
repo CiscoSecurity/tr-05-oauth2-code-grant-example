@@ -29,5 +29,6 @@ def delete_module():
     modules_api.delete_module(request.args.get('module_id'))
     return render_template(
         "index.html",
-        info=f"Successfully deleted module with ID f{request.args.get('module_id')}",
+        info="Successfully deleted module with ID "
+             f"f{request.args.get('module_id')}",
     )

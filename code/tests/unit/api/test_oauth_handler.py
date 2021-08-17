@@ -7,12 +7,15 @@ from api.oauth_handler import OAuth2CTR
 
 TEST_TOKENS = {'access_token': 'test_access_token',
                'refresh_token': 'test_refresh_token',
-               'token_type': 'bearer', 'expires_in': 600, 'scope': 'integration admin inspect'}
+               'token_type': 'bearer',
+               'expires_in': 600,
+               'scope': 'integration admin inspect'}
 
 
 @pytest.fixture
 def mock_state(monkeypatch):
-    monkeypatch.setattr(OAuth2CTR, "_generate_state", lambda *args, **kwargs: "mocked_state")
+    monkeypatch.setattr(OAuth2CTR, "_generate_state",
+                        lambda *args, **kwargs: "mocked_state")
 
 
 @pytest.fixture
@@ -45,8 +48,11 @@ def test_oauth_save_token(test_app, mock_time):
         auth = OAuth2CTR('North America')
         auth._save_tokens(dict(TEST_TOKENS))
 
-        assert session["oauth_token"] == {'access_token': 'test_access_token',
-                                          'refresh_token': 'test_refresh_token',
-                                          'token_type': 'bearer', 'expires_in': 600,
-                                          'expires_at': 1500000600,
-                                          'scope': 'integration admin inspect'}
+        assert session["oauth_token"] == {
+            'access_token': 'test_access_token',
+            'refresh_token': 'test_refresh_token',
+            'token_type': 'bearer',
+            'expires_in': 600,
+            'expires_at': 1500000600,
+            'scope': 'integration admin inspect'
+        }
