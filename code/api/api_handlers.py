@@ -1,7 +1,7 @@
 import requests
 from flask import session, abort
 
-from constants import BASE_URL
+from api.constants import BASE_URL
 
 
 class BaseAPI:
@@ -22,7 +22,8 @@ class BaseAPI:
     def __request(self, method, *args, **kwargs):
         response = requests.request(method, *args, **kwargs)
         if not response.ok:
-            abort(response.status_code, f"Failed to {method} data ({self.url})")
+            abort(response.status_code,
+                  f"Failed to {method} data ({self.url})")
         try:
             return response.json()
         except ValueError:
@@ -36,7 +37,8 @@ class ModuleInstanceAPI(BaseAPI):
     def headers(self):
         return {
             "Accept": "application/json",
-            "Authorization": f'Bearer {session["oauth_token"]["access_token"]}',
+            "Authorization": f'Bearer '
+                             f'{session["oauth_token"]["access_token"]}',
             "Content-Type": "application/json",
         }
 
@@ -68,7 +70,8 @@ class InspectAPI(BaseAPI):
     def headers(self):
         return {
             "Accept": "application/json",
-            "Authorization": f'Bearer {session["oauth_token"]["access_token"]}',
+            "Authorization": f'Bearer '
+                             f'{session["oauth_token"]["access_token"]}',
             "Content-Type": "application/json",
         }
 

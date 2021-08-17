@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 
-from api_handlers import ModuleInstanceAPI
-from utils import required_authorization
+from api.api_handlers import ModuleInstanceAPI
+from api.utils import required_authorization
 
 modules_blueprint = Blueprint("modules", __name__, url_prefix="/modules")
 
@@ -29,5 +29,6 @@ def delete_module():
     modules_api.delete_module(request.args.get('module_id'))
     return render_template(
         "index.html",
-        info=f"Successfully deleted module with ID f{request.args.get('module_id')}",
+        info="Successfully deleted module with ID "
+             f"f{request.args.get('module_id')}",
     )

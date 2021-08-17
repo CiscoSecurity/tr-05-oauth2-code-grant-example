@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 
-from api_handlers import InspectAPI
-from utils import required_authorization
+from api.api_handlers import InspectAPI
+from api.utils import required_authorization
 
 inspect_blueprint = Blueprint("inspect", __name__, url_prefix="/inspect")
 

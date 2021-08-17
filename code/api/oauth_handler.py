@@ -5,8 +5,8 @@ from http import HTTPStatus
 from urllib.parse import urlencode
 from flask import url_for, session, abort
 
-from api_handlers import BaseAPI
-from constants import CLIENT_ID, CLIENT_SECRET, REGION_API_URLS
+from api.api_handlers import BaseAPI
+from api.constants import CLIENT_ID, CLIENT_SECRET, REGION_API_URLS
 
 
 class OAuth2CTR(BaseAPI):
@@ -57,7 +57,8 @@ class OAuth2CTR(BaseAPI):
         url = f"{self.url}/token"
 
         if not code:
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR, "Authorization code was not provided")
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR,
+                  "Authorization code was not provided")
 
         payload = {
             "grant_type": "authorization_code",
@@ -84,7 +85,8 @@ class OAuth2CTR(BaseAPI):
         """
         refresh_token = session.get("oauth_token", {}).get("refresh_token")
         if not refresh_token:
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR, "Refresh token was not provided")
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR,
+                  "Refresh token was not provided")
 
         payload = {
             "grant_type": "refresh_token",
@@ -103,7 +105,9 @@ class OAuth2CTR(BaseAPI):
         return tokens
 
     def _save_tokens(self, token):
-        token["expires_at"] = self._get_tokens_expiration_time(token["expires_in"])
+        token["expires_at"] = self._get_tokens_expiration_time(
+            token["expires_in"]
+        )
         existing_token = session.get("oauth_token")
         if existing_token:
             existing_token.update(token)

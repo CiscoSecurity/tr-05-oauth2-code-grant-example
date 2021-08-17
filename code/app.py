@@ -2,9 +2,9 @@ import os
 
 from flask import Flask
 
-from inspect_ import inspect_blueprint
-from modules import modules_blueprint
-from oauth import oauth_blueprint
+from api.inspect_ import inspect_blueprint
+from api.modules import modules_blueprint
+from api.oauth import oauth_blueprint
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)

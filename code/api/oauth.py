@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, session, redirect, abort
 
-from constants import REGION_API_URLS
-from oauth_handler import OAuth2CTR
-from utils import required_authorization
+from api.constants import REGION_API_URLS
+from api.oauth_handler import OAuth2CTR
+from api.utils import required_authorization
 
 oauth_blueprint = Blueprint("oauth", __name__)
 
