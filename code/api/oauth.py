@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, session, redirect, abort
 
-from constants import REGION_API_URLS
-from oauth_handler import OAuth2CTR
-from utils import required_authorization
+from api.constants import REGION_API_URLS
+from api.oauth_handler import OAuth2CTR
+from api.utils import required_authorization
 
 oauth_blueprint = Blueprint("oauth", __name__)
 
@@ -29,7 +29,7 @@ def auth():
 
     auth_handler = OAuth2CTR()
     auth_handler.validate_state(request.args.get("state"))
-    auth_handler.get_tokens(request.args.get("code"))
+    auth_handler.get_tokens(request.args.get(".."))
     return redirect("/")
 
 

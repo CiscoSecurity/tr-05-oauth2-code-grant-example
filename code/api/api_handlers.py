@@ -1,7 +1,7 @@
 import requests
 from flask import session, abort
 
-from constants import BASE_URL
+from api.constants import BASE_URL
 
 
 class BaseAPI:

@@ -1,10 +1,10 @@
 import time
 
 from functools import wraps
-from flask import session, render_template, abort
+from flask import session, render_template
 
-from constants import REGION_API_URLS
-from oauth_handler import OAuth2CTR
+from api.constants import REGION_API_URLS
+from api.oauth_handler import OAuth2CTR
 
 
 def required_authorization(func):

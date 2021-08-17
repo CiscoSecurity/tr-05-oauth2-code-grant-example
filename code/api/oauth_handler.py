@@ -5,8 +5,8 @@ from http import HTTPStatus
 from urllib.parse import urlencode
 from flask import url_for, session, abort
 
-from api_handlers import BaseAPI
-from constants import CLIENT_ID, CLIENT_SECRET, REGION_API_URLS
+from api.api_handlers import BaseAPI
+from api.constants import CLIENT_ID, CLIENT_SECRET, REGION_API_URLS
 
 
 class OAuth2CTR(BaseAPI):
