@@ -35,7 +35,7 @@ def default_session():
         'oauth_token': {
             'access_token': 'test_access_token',
             'expires_at': time.time() + 600,
-            'refresh_token': 'test_access_token'
+            'refresh_token': 'test_refresh_token'
         },
         'region': 'North America'
     }
