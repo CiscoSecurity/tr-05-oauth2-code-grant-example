@@ -30,5 +30,5 @@ def delete_module():
     return render_template(
         "index.html",
         info="Successfully deleted module with ID "
-             f"f{request.args.get('module_id')}",
+             f"{request.args.get('module_id')}",
     )
